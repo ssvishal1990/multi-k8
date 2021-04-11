@@ -1,0 +1,141 @@
+pods :
+ 
+A Pod (as in a pod of whales or pea pod) is a group of one or more containers, with shared storage and network resources, and a specification for how to run the containers. A Pod's contents are always co-located and co-scheduled, and run in a shared context. A Pod models an application-specific "logical host": it contains one or more application containers which are relatively tightly coupled. In non-cloud contexts, applications executed on the same physical or virtual machine are analogous to cloud applications executed on the same logical host.
+
+
+
+Services: 
+
+An abstract way to expose an application running on a set of Pods as a network service.
+With Kubernetes you don't need to modify your application to use an unfamiliar service discovery mechanism. Kubernetes gives Pods their own IP addresses and a single DNS name for a set of Pods, and can load-balance across them.
+
+Different types of services
+
+--> Cluster IP 
+
+--> Node Port
+
+--> Load Balancer
+
+--> ingress
+
+
+Feed a config file to K8
+
+--> kubectl apply -f <path to the config>
+
+To get status of different pods or services or object types of K8
+
+kubectl get <object type>
+
+For ex : Kubectl get pods
+
+K8 cluster
+A Kubernetes cluster is a set of nodes that run containerized applications. Containerizing applications packages an app with its dependences and some necessary services. They are more lightweight and flexible than virtual machines. In this way, Kubernetes clusters allow for applications to be more easily developed, moved and managed.
+
+
+What makes up a Kubernetes cluster?
+A Kubernetes cluster contains six main components:
+
+API server: Exposes a REST interface to all Kubernetes resources. Serves as the front end of the Kubernetes control plane.
+Scheduler: Places containers according to resource requirements and metrics. Makes note of Pods with no assigned node, and selects nodes for them to run on.
+Controller manager: Runs controller processes and reconciles the cluster’s actual state with its desired specifications. Manages controllers such as node controllers, endpoints controllers and replication controllers.
+Kubelet: Ensures that containers are running in a Pod by interacting with the Docker engine , the default program for creating and managing containers. Takes a set of provided PodSpecs and ensures that their corresponding containers are fully operational.
+Kube-proxy: Manages network connectivity and maintains network rules across nodes. Implements the Kubernetes Service concept across every node in a given cluster.
+Etcd: Stores all cluster data. Consistent and highly available Kubernetes backing store. 
+
+
+
+Deployment object type:
+
+Maintains a set of identical pods, ensuring that they 
+have the correct config and that the right number exists 
+
+
+Deployment has something known as Pod template 
+Which describes properties of the pods
+
+Pods VS Deployment
+
+Pods : Runs a single set of containers
+        Good for one-off dev purpose
+        Rarely used directly in production
+
+Deployment: Runs a set of identical pods
+            Monitors the state of each pod updating as neccessary
+            Good for dev as well productions
+
+
+To get a litle bit more information on an object type
+
+
+--> kubectl get pods -o wide
+
+Challenges to using deployments:
+
+It's hard to pull latest version of image and automatically
+update the pods to use latest version of image
+
+Ways around it:
+
+1) Brute force :: Manually delete the pods that is managed by that Deployment
+2) Tagging an image in deployment config it will cause some problem later as it add some extra steps  in the flow of 
+    git comit -> travis build -> push image -> then update our Tagging
+
+3) Use of an imperative command in kubectl apply to do this
+we do this by:
+
+kubectl set image <object_type>/<object_name> <container_name> =  <new image to use>
+Set command is used to update kubectl cofig
+
+
+kubectl get pods,services,deployments,jobs
+
+Volume : It allows us to store data in localhost. 
+            iN a way that if there's any change in data in that volume in localhost same will be reflected in container as well
+
+Kubernetes volume : Basically it means file storage at pod leve
+            Dis advantage is when pod dies volume dies all data lost
+
+Persistent volume : This helps us to store data in locallhost in Kubernetes || Long term storage || not tied to pod
+
+Statically provisioned  :  It is a Persistent volume which has been created in our cluster. Ahead of our current action 
+Persistent Volume
+
+Dyanamic Provisioned : Creates volume on the fly when we need and ask for it
+volume
+
+PVC is a declaration of need for storage that can at some point become available / satisfied - as in bound to some actual PV.
+
+So a persistent volume (PV) is the "physical" volume on the host machine that stores your persistent data. 
+A persistent volume claim (PVC) is a request for the platform to create a PV for you, and you attach PVs to your pods via a PVC.
+
+Different access Moodes of PVC
+
+ReadWriteOnce --> Can be used by a single node. 
+ReadOnlyMany --> Multiple nodes can read from this. 
+ReadWriteMany --> Can be read and written to by many nodes
+
+On localhost it takes space from harddriev 
+
+But when we deploy it to production
+It will take space from the respective cloud
+
+cloudName -->    Resource name which it will ppick
+Google Cloud --> Persistance disk
+Azure -->        File
+Azure -->        Disk
+AWS   -->        AWS block store
+
+
+To create a secret in impperative way
+
+kubectl create secret generic <secret-name> --from-literal key=value
+
+
+Ingress :: Expose a set of services to outside world
+
+we are using Ingress-nginx, a coomunity led project
+Setup of ingress-nginx changes as per your env(local, google cloud, aws, azure)
+
+Not using kubernetes-ingress, a project led by the company nginx
