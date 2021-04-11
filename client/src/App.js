@@ -18,7 +18,7 @@ function App() {
             rel="noopener noreferrer"
           >
             Learn React
-          </a>
+          </a><div> DOing it in kubernetes style</div>
           <Link to="/">Home</Link>
           <Link to="/otherpage">Other Page</Link>
         </header>
